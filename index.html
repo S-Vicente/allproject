@@ -10,11 +10,11 @@
   <meta name="theme-color" content="#B6A39E">
 <style>
   :root {
-    --bg-primary:   #DDE0BD;
-    --bg-secondary: #D0D1AC;
-    --surface:      #B6A39E;
-    --text-primary:   #948B89;
-    --text-secondary: #726E75;
+     --bg-primary:   #DDE0BD;
+     --bg-secondary: #B7E1E1;
+     --surface:      #B6A39E;
+     --text-primary:   #EBEBEB;
+     --text-secondary: #404664;
     --accent:         var(--surface);
     --shadow:         rgba(0,0,0,0.1);
   }
@@ -71,21 +71,21 @@
 <header>
   <div class="header-left">
     <button id="back" class="btn hidden">←</button>
-    <h1 id="page-title">AllProjectApp v1.3</h1>
+    <h1 id="page-title">AllProjectS v1.5</h1>
   </div>
   <div class="header-right">
-    <button id="addProj" class="btn">+ Projeto</button>
+    <button id="addProj" class="btn">+ Project</button>
     <button id="addTask" class="btn hidden">+ Tarefa</button>
     <button id="menu-btn" onclick="event.stopPropagation(); menu.classList.toggle('visible')">⋮</button>
   </div>
   <div id="menu" class="menu" onclick="event.stopPropagation()">
     <ul>
-      <li id="m-edit">✏️ Editar</li>
-      <li id="m-search">🔍 Buscar</li>
-      <li id="m-sort">⇅ Ordenar</li>
-      <li id="m-filter">⌛ Filtrar Período</li>
-      <li id="m-export">📤 Exportar CSV</li>
-      <li id="m-import">📥 Importar CSV</li>
+      <li id="m-edit">✏️ Edit</li>
+      <li id="m-search">🔍 Search</li>
+      <li id="m-sort">⇅ Ordenate</li>
+      <li id="m-filter">⌛ Period Filter</li>
+      <li id="m-export">📤 Export CSV</li>
+      <li id="m-import">📥 Import CSV</li>
     </ul>
   </div>
 </header>
@@ -135,7 +135,7 @@
       const header = lines.shift();
       if (header.startsWith('task,')) {
         // importa apenas tarefas para um projeto existente/novo
-        const projName = prompt('Nome do projeto para importar tarefas:');
+        const projName = prompt('Name of file to import tasks:');
         if (!projName) return;
         let proj = projects.find(p=>p.name===projName);
         if (!proj) { proj={name:projName,tasks:[]}; projects.push(proj); }
@@ -166,7 +166,7 @@
         });
       }
       save(); showProj(idxProj());
-      alert('Importação concluída!');
+      alert('Import concluded!');
     };
     reader.readAsText(file);
   };
@@ -175,7 +175,7 @@
   // Renderiza projetos
   function showProj(indices) {
     current = null;
-    titleEl.textContent = 'AllProjectApp';
+    titleEl.textContent = 'AllProjectS';
     back.classList.add('hidden');
     addProj.classList.remove('hidden');
     addTask.classList.add('hidden');
@@ -195,9 +195,9 @@
 
       const actions = document.createElement('div'); actions.className='card-actions';
       const ed = document.createElement('button'); ed.innerText='✏️';
-      ed.onclick = e=>{ e.stopPropagation(); const n=prompt('Novo nome:',p.name); if(n){p.name=n;save();showProj(indices);} };
+      ed.onclick = e=>{ e.stopPropagation(); const n=prompt('New name:',p.name); if(n){p.name=n;save();showProj(indices);} };
       const del = document.createElement('button'); del.innerText='🗑️';
-      del.onclick = e=>{ e.stopPropagation(); if(confirm('Excluir projeto?')){projects.splice(i,1);save();showProj(idxProj());} };
+      del.onclick = e=>{ e.stopPropagation(); if(confirm('Delete project?')){projects.splice(i,1);save();showProj(idxProj());} };
       actions.append(ed,del);
 
       card.append(content, actions);
@@ -244,13 +244,13 @@
         pr.className='progress-bar'; pr.max=100; pr.value=t.progress;
         const up = document.createElement('button');
         up.innerText='📈';
-        up.onclick=e=>{ e.stopPropagation(); const v=parseInt(prompt('Progresso (0-100):',t.progress),10); if(!isNaN(v)){t.progress=Math.min(100,Math.max(0,v));save();showTask(indices,projIdx);} };
+        up.onclick=e=>{ e.stopPropagation(); const v=parseInt(prompt('Progress (0-100):',t.progress),10); if(!isNaN(v)){t.progress=Math.min(100,Math.max(0,v));save();showTask(indices,projIdx);} };
         actions.append(pr,up);
       }
       const ed = document.createElement('button'); ed.innerText='✏️';
-      ed.onclick=e=>{ e.stopPropagation(); const nt=prompt('Título:',t.title); if(nt){t.title=nt;} const nd=prompt('Data/hora (YYYY-MM-DD hh:mm):',t.datetime?new Date(t.datetime).toISOString().slice(0,16).replace('T',' '):''); if(nd){t.datetime=new Date(nd).toISOString();} save(); showTask(indices,projIdx); };
+      ed.onclick=e=>{ e.stopPropagation(); const nt=prompt('Title:',t.title); if(nt){t.title=nt;} const nd=prompt('Date/time (YYYY-MM-DD hh:mm):',t.datetime?new Date(t.datetime).toISOString().slice(0,16).replace('T',' '):''); if(nd){t.datetime=new Date(nd).toISOString();} save(); showTask(indices,projIdx); };
       const del = document.createElement('button'); del.innerText='🗑️';
-      del.onclick=e=>{ e.stopPropagation(); if(confirm('Excluir tarefa?')){p.tasks.splice(i,1); save(); showTask(idxTask(projIdx),projIdx);} };
+      del.onclick=e=>{ e.stopPropagation(); if(confirm('Delete task?')){p.tasks.splice(i,1); save(); showTask(idxTask(projIdx),projIdx);} };
       actions.append(ed,del);
 
       card.append(content, actions);
@@ -262,14 +262,14 @@
   showProj(idxProj());
 
   // eventos principais
-  addProj.onclick=()=>{ const n=prompt('Nome do projeto:'); if(n){projects.push({name:n,tasks:[]});save();showProj(idxProj());}};
+  addProj.onclick=()=>{ const n=prompt('Name of project:'); if(n){projects.push({name:n,tasks:[]});save();showProj(idxProj());}};
   back.onclick=()=>showProj(idxProj());
-  addTask.onclick=()=>{ const t=prompt('Título da tarefa:'); if(!t)return; const dt=prompt('Data/hora (YYYY-MM-DD hh:mm):'); projects[current].tasks.push({title:t,datetime:dt?new Date(dt).toISOString():null,tracking:false,progress:0}); save(); showTask(idxTask(current),current); };
+  addTask.onclick=()=>{ const t=prompt('Title of task:'); if(!t)return; const dt=prompt('Date/time (YYYY-MM-DD hh:mm):'); projects[current].tasks.push({title:t,datetime:dt?new Date(dt).toISOString():null,tracking:false,progress:0}); save(); showTask(idxTask(current),current); };
 
-  mEdit.onclick  =()=>alert('Use ✏️ nos cards para editar.');
-  mSearch.onclick=()=>{ const term=prompt('Buscar:').toLowerCase(); if(current===null){ showProj(idxProj().filter(i=>projects[i].name.toLowerCase().includes(term))); } else { showTask(idxTask(current).filter(i=>projects[current].tasks[i].title.toLowerCase().includes(term)),current); }};
+  mEdit.onclick  =()=>alert('Use ✏️ at cards to edit.');
+  mSearch.onclick=()=>{ const term=prompt('Search:').toLowerCase(); if(current===null){ showProj(idxProj().filter(i=>projects[i].name.toLowerCase().includes(term))); } else { showTask(idxTask(current).filter(i=>projects[current].tasks[i].title.toLowerCase().includes(term)),current); }};
   mSort.onclick  =()=>{ if(current===null){ let a=idxProj(); a.sort((a,b)=>asc?projects[a].name.localeCompare(projects[b].name):projects[b].name.localeCompare(projects[a].name)); showProj(a);} else{ let a=idxTask(current); a.sort((a,b)=>asc?projects[current].tasks[a].title.localeCompare(projects[current].tasks[b].title):projects[current].tasks[b].title.localeCompare(projects[current].tasks[a].title)); showTask(a,current);} asc=!asc; };
-  mFilter.onclick=()=>{ if(current===null){alert('Abra um projeto para filtrar.');return;} const s=prompt('Início (YYYY-MM-DD hh:mm):'); if(!s)return; const e=prompt('Fim (YYYY-MM-DD hh:mm):'); if(!e)return; const st=new Date(s),en=new Date(e); showTask(idxTask(current).filter(i=>{const d=projects[current].tasks[i].datetime?new Date(projects[current].tasks[i].datetime):null;return d&&d>=st&&d<=en;}),current); };
+  mFilter.onclick=()=>{ if(current===null){alert('Open a project to filter.');return;} const s=prompt('Start (YYYY-MM-DD hh:mm):'); if(!s)return; const e=prompt('Fim (YYYY-MM-DD hh:mm):'); if(!e)return; const st=new Date(s),en=new Date(e); showTask(idxTask(current).filter(i=>{const d=projects[current].tasks[i].datetime?new Date(projects[current].tasks[i].datetime):null;return d&&d>=st&&d<=en;}),current); };
 
   mExport.onclick = () => {
     const header = current===null
