@@ -108,31 +108,31 @@
     let storedUser = localStorage.getItem(KEY_USER);
     let storedPass = localStorage.getItem(KEY_PASS);
 
-    // Se não existir, faz o cadastro
+    // Se não existir, faz o cadastro apenas na primeira vez
     if (!storedUser || !storedPass) {
-      const newUser = prompt('Bem‑vindo! Defina um usuário:');
+      const newUser = prompt('Welcome! Define a username:');
       if (!newUser) {
-        alert('Cadastro cancelado — usuário obrigatório.');
-        throw new Error('Cadastro cancelado');
+        alert('Registration cancelled — username required.');
+        throw new Error('Registration cancelled');
       }
-      const newPass = prompt('Agora defina uma senha:');
+      const newPass = prompt('Now define a password:');
       if (!newPass) {
-        alert('Cadastro cancelado — senha obrigatória.');
-        throw new Error('Cadastro cancelado');
+        alert('Registration cancelled — password required.');
+        throw new Error('Registration cancelled');
       }
       localStorage.setItem(KEY_USER, newUser);
       localStorage.setItem(KEY_PASS, newPass);
-      alert('Usuário e senha cadastrados com sucesso! Faça login a seguir.');
+      alert('User and password registered successfully! Please log in.');
       storedUser = newUser;
       storedPass = newPass;
     }
 
-    // Login
-    const user = prompt('Usuário:');
-    const pass = prompt('Senha:');
+    // Login sempre ao entrar
+    const user = prompt('Username:');
+    const pass = prompt('Password:');
     if (user !== storedUser || pass !== storedPass) {
-      alert('Usuário ou senha incorretos. O app não será aberto.');
-      throw new Error('Autenticação falhou');
+      alert('Incorrect username or password. The app will not open.');
+      throw new Error('Authentication failed');
     }
     // ======= FIM AUTENTICAÇÃO =======
 
@@ -289,7 +289,7 @@
         ed.onclick=e=>{ e.stopPropagation();
           const nt=prompt('Title:',t.title);
           const nd=prompt('Date/time (YYYY-MM-DD hh:mm):', t.datetime?new Date(t.datetime).toISOString().slice(0,16).replace('T',' '):'');
-          const nm=prompt('Color (hex ou name) ou branco:', t.mark||'');
+          const nm=prompt('Color (hex or name) or blank:', t.mark||'');
           if(nt) t.title=nt;
           if(nd) t.datetime=new Date(nd).toISOString();
           t.mark = nm.trim()||null;
@@ -310,7 +310,7 @@
     // eventos
     addProj.onclick=()=>{ const n=prompt('Name of project:'); if(n){projects.push({name:n,tasks:[]}); save(); showProj(idxProj());}};
     back.onclick=()=>showProj(idxProj());
-    addTask.onclick=()=>{ const t=prompt('Title of task:'); if(!t)return; const dt=prompt('Date/time (YYYY-MM-DD hh:mm):'); const mk=prompt('Color (hex ou name) ou branco:'); projects[current].tasks.push({title:t, datetime:dt?new Date(dt).toISOString():null, tracking:false, progress:0, mark: mk.trim()||null}); save(); showTask(idxTask(current),current); };
+    addTask.onclick=()=>{ const t=prompt('Title of task:'); if(!t)return; const dt=prompt('Date/time (YYYY-MM-DD hh:mm):'); const mk=prompt('Color (hex or name) or blank:'); projects[current].tasks.push({title:t, datetime:dt?new Date(dt).toISOString():null, tracking:false, progress:0, mark: mk.trim()||null}); save(); showTask(idxTask(current),current); };
 
     mEdit.onclick  =()=>alert('Use ✏️ at cards to edit.');
     mSearch.onclick=()=>{ const term=prompt('Search:').toLowerCase(); if(current===null){ showProj(idxProj().filter(i=>projects[i].name.toLowerCase().includes(term))); } else { showTask(idxTask(current).filter(i=>projects[current].tasks[i].title.toLowerCase().includes(term)),current); }};
@@ -330,18 +330,16 @@
       const newU = prompt('New user:', storedUser);
       if (!newU) { alert('User not changed.'); return; }
       const newP = prompt('New password:');
-      if (!newP) { alert('Passor not changd.'); return; }
+      if (!newP) { alert('Password not changed.'); return; }
       localStorage.setItem(KEY_USER, newU);
       localStorage.setItem(KEY_PASS, newP);
       storedUser = newU;
       storedPass = newP;
-      alert('User and password changed with success!');
+      alert('User and password changed successfully!');
     };
 
-    // sair (exit)
+    // sair (exit) — limpa apenas a “sessão”, não as credenciais
     mExit.onclick = () => {
-      localStorage.removeItem(KEY_USER);
-      localStorage.removeItem(KEY_PASS);
       alert('You exit. Reloading to ask for login again.');
       location.reload();
     };
