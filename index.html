@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <!-- Coloque logo aqui, como primeira linha dentro de <head> -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -121,7 +120,6 @@
   const idxProj= () => projects.map((_,i)=>i);
   const idxTask= p => projects[p].tasks.map((_,i)=>i);
 
-  // hidden file input for CSV import
   const importInput = document.createElement('input');
   importInput.type = 'file'; importInput.accept = '.csv';
   importInput.style.display = 'none';
@@ -149,7 +147,7 @@
       } else {
         projects = [];
         lines.forEach(line=>{
-          const m = line.match(/"([^"]*)","([^"]*)",([^,]*),([^,]+)/);
+          const m = line.match(/"([^\"]*)","([^\"]*)",([^,]*),([^,]+)/);
           if (!m) return;
           const [,pn,tt,dt,pr] = m;
           let proj = projects.find(p=>p.name===pn);
@@ -218,43 +216,22 @@
       const card = document.createElement('div'); card.className='card';
 
       const content = document.createElement('div'); content.className='card-content';
-      const chk = document.createElement('input');
-      chk.type='checkbox'; chk.checked=t.tracking;
+      const chk = document.createElement('input'); chk.type='checkbox'; chk.checked=t.tracking;
       chk.onchange=()=>{ t.tracking=chk.checked; if(!t.tracking) t.progress=0; save(); showTask(indices,projIdx); };
-      const dot = document.createElement('span');
-      dot.className='mark-icon';
-      dot.innerText = '●';
+      const dot = document.createElement('span'); dot.className='mark-icon'; dot.innerText='●';
       dot.style.color = t.mark||'transparent';
-      const txt = document.createElement('span');
-      txt.textContent = t.title;
+      const txt = document.createElement('span'); txt.textContent = t.title;
       content.append(chk, dot, txt);
-      if(t.datetime){
-        const dt = document.createElement('small');
-        dt.textContent = new Date(t.datetime).toLocaleString();
-        content.append(dt);
-      }
+      if(t.datetime){ const dt = document.createElement('small'); dt.textContent=new Date(t.datetime).toLocaleString(); content.append(dt); }
 
       const actions = document.createElement('div'); actions.className='card-actions';
-      if(t.tracking){
-        const pr = document.createElement('progress');
-        pr.className='progress-bar'; pr.max=100; pr.value=t.progress;
-        const up = document.createElement('button');
-        up.innerText='📈';
-        up.onclick=e=>{ e.stopPropagation(); const v=parseInt(prompt('Progress (0‑100):',t.progress),10); if(!isNaN(v)){t.progress=Math.min(100,Math.max(0,v));save();showTask(indices,projIdx);} };
+      if(t.tracking){ const pr=document.createElement('progress'); pr.className='progress-bar'; pr.max=100; pr.value=t.progress;
+        const up=document.createElement('button'); up.innerText='📈'; up.onclick=e=>{ e.stopPropagation(); const v=parseInt(prompt('Progress (0‑100):',t.progress),10); if(!isNaN(v)){t.progress=Math.min(100,Math.max(0,v));save();showTask(indices,projIdx);} };
         actions.append(pr,up);
       }
       const ed = document.createElement('button'); ed.innerText='✏️';
-      ed.onclick=e=>{ e.stopPropagation();
-        const nt=prompt('Title:',t.title);
-        const nd=prompt('Date/time (YYYY-MM-DD hh:mm):', t.datetime?new Date(t.datetime).toISOString().slice(0,16).replace('T',' '):'');
-        const nm=prompt('Color (hex or name) or blank:', t.mark||'');
-        if(nt) t.title=nt;
-        if(nd) t.datetime=new Date(nd).toISOString();
-        t.mark = nm.trim()||null;
-        save(); showTask(indices,projIdx);
-      };
-      const del = document.createElement('button'); del.innerText='🗑️';
-      del.onclick=e=>{ e.stopPropagation(); if(confirm('Delete task?')){p.tasks.splice(i,1); save(); showTask(idxTask(projIdx),projIdx);} };
+      ed.onclick=e=>{ e.stopPropagation(); const nt=prompt('Title:',t.title); const nd=prompt('Date/time (YYYY-MM-DD hh:mm):', t.datetime?new Date(t.datetime).toISOString().slice(0,16).replace('T',' '):''); const nm=prompt('Color or blank:', t.mark||''); if(nt) t.title=nt; if(nd) t.datetime=new Date(nd).toISOString(); t.mark=nm.trim()||null; save(); showTask(indices,projIdx); };
+      const del=document.createElement('button'); del.innerText='🗑️'; del.onclick=e=>{ e.stopPropagation(); if(confirm('Delete task?')){p.tasks.splice(i,1);save();showTask(idxTask(projIdx),projIdx);} };
       actions.append(ed,del);
 
       card.append(content, actions);
@@ -265,15 +242,27 @@
   // init
   showProj(idxProj());
 
-  // eventos
   addProj.onclick=()=>{ const n=prompt('Name of project:'); if(n){projects.push({name:n,tasks:[]}); save(); showProj(idxProj());}};
   back.onclick=()=>showProj(idxProj());
-  addTask.onclick=()=>{ const t=prompt('Title of task:'); if(!t)return; const dt=prompt('Date/time (YYYY-MM-DD hh:mm):'); const mk=prompt('Color (hex or name) or blank:'); projects[current].tasks.push({title:t, datetime:dt?new Date(dt).toISOString():null, tracking:false, progress:0, mark: mk.trim()||null}); save(); showTask(idxTask(current),current); };
+  addTask.onclick=()=>{ const t=prompt('Title of task:'); if(!t)return; const dt=prompt('Date/time (YYYY-MM-DD hh:mm):'); const mk=prompt('Color or blank:'); projects[current].tasks.push({title:t,datetime:dt?new Date(dt).toISOString():null,tracking:false,progress:0,mark:mk.trim()||null}); save(); showTask(idxTask(current),current); };
 
   mEdit.onclick  =()=>alert('Use ✏️ at cards to edit.');
   mSearch.onclick=()=>{ const term=prompt('Search:').toLowerCase(); if(current===null){ showProj(idxProj().filter(i=>projects[i].name.toLowerCase().includes(term))); } else { showTask(idxTask(current).filter(i=>projects[current].tasks[i].title.toLowerCase().includes(term)),current); }};
   mSort.onclick  =()=>{ if(current===null){ let a=idxProj(); a.sort((a,b)=>asc?projects[a].name.localeCompare(projects[b].name):projects[b].name.localeCompare(projects[a].name)); showProj(a);} else{ let a=idxTask(current); a.sort((a,b)=>asc?projects[current].tasks[a].title.localeCompare(projects[current].tasks[b].title):projects[current].tasks[b].title.localeCompare(projects[current].tasks[a].title)); showTask(a,current);} asc=!asc; };
-  mFilter.onclick=()=>{ if(current===null){alert('Open a project to filter.');return;} const s=prompt('Start at (YYYY-MM-DD hh:mm):'); if(!s)return; const e=prompt('End at (YYYY-MM-DD hh:mm):'); if(!e)return; const st=new Date(s),en=new Date(e); showTask(idxTask(current).filter(i=>{const d=projects[current].tasks[i].datetime?new Date(projects[current].tasks[i].datetime):null;return d&&d>=st&&d<=en;}),current); };
-  mExport.onclick = ()=>{/* igual v1.3 code de export */};
-  mImport.onclick = ()=> importInput.click();
+  mFilter.onclick=()=>{ if(current===null){alert('Open a project to filter.');return;} const s=prompt('Start (YYYY-MM-DD hh:mm):'); if(!s)return; const e=prompt('End (YYYY-MM-DD hh:mm):'); if(!e)return; const st=new Date(s),en=new Date(e); showTask(idxTask(current).filter(i=>{const d=projects[current].tasks[i].datetime?new Date(projects[current].tasks[i].datetime):null;return d&&d>=st&&d<=en;}),current); };
+  mExport.onclick=()=>{
+    const header = current===null
+      ? 'project,task,datetime,progress\n'
+      : 'task,datetime,progress\n';
+    const lines = current===null
+      ? projects.flatMap(p=>p.tasks.map(t=>`"${p.name}","${t.title}",${t.datetime||""},${t.progress||0}`))
+      : projects[current].tasks.map(t=>`"${t.title}",${t.datetime||""},${t.progress||0}`);
+    const csv = header + lines.join("\n");
+    const blob = new Blob([csv],{type:'text/csv'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = current===null ? 'allprojects.csv' : `project_${projects[current].name}.csv`;
+    document.body.append(a); a.click(); document.body.removeChild(a);
+  };
+  mImport.onclick=()=>importInput.click();
 </script>
