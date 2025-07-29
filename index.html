@@ -75,7 +75,7 @@
   </div>
   <div class="header-right">
     <button id="addProj" class="btn">+ Project</button>
-    <button id="addTask" class="btn hidden">+ Tarefa</button>
+    <button id="addTask" class="btn hidden">+ Task</button>
     <button id="menu-btn" onclick="event.stopPropagation(); menu.classList.toggle('visible')">⋮</button>
   </div>
   <div id="menu" class="menu" onclick="event.stopPropagation()">
@@ -269,7 +269,7 @@
   mEdit.onclick  =()=>alert('Use ✏️ at cards to edit.');
   mSearch.onclick=()=>{ const term=prompt('Search:').toLowerCase(); if(current===null){ showProj(idxProj().filter(i=>projects[i].name.toLowerCase().includes(term))); } else { showTask(idxTask(current).filter(i=>projects[current].tasks[i].title.toLowerCase().includes(term)),current); }};
   mSort.onclick  =()=>{ if(current===null){ let a=idxProj(); a.sort((a,b)=>asc?projects[a].name.localeCompare(projects[b].name):projects[b].name.localeCompare(projects[a].name)); showProj(a);} else{ let a=idxTask(current); a.sort((a,b)=>asc?projects[current].tasks[a].title.localeCompare(projects[current].tasks[b].title):projects[current].tasks[b].title.localeCompare(projects[current].tasks[a].title)); showTask(a,current);} asc=!asc; };
-  mFilter.onclick=()=>{ if(current===null){alert('Open a project to filter.');return;} const s=prompt('Start (YYYY-MM-DD hh:mm):'); if(!s)return; const e=prompt('Fim (YYYY-MM-DD hh:mm):'); if(!e)return; const st=new Date(s),en=new Date(e); showTask(idxTask(current).filter(i=>{const d=projects[current].tasks[i].datetime?new Date(projects[current].tasks[i].datetime):null;return d&&d>=st&&d<=en;}),current); };
+  mFilter.onclick=()=>{ if(current===null){alert('Open a project to filter.');return;} const s=prompt('Start at (YYYY-MM-DD hh:mm):'); if(!s)return; const e=prompt('End at (YYYY-MM-DD hh:mm):'); if(!e)return; const st=new Date(s),en=new Date(e); showTask(idxTask(current).filter(i=>{const d=projects[current].tasks[i].datetime?new Date(projects[current].tasks[i].datetime):null;return d&&d>=st&&d<=en;}),current); };
 
   mExport.onclick = () => {
     const header = current===null
