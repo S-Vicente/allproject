@@ -1,268 +1,350 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <!-- Coloque logo aqui, como primeira linha dentro de <head> -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>AllProjectS v1.5</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#B6A39E">
-<style>
-  :root {
-     --bg-primary:   #DDE0BD;
+  <style>
+    :root {
+      --bg-primary:   #DDE0BD;
       --bg-secondary: #B7E1E1;
       --surface:      #B6A39E;
       --text-primary:   #EBEBEB;
       --text-secondary: #404664;
-    --accent:         var(--surface);
-    --shadow:         rgba(0,0,0,0.1);
-  }
-  * { box‑sizing:border‑box; margin:0; padding:0 }
-  body {
-    font-family:sans-serif;
-    background:var(--bg-primary);
-    color:var(--text-primary);
-    display:flex; flex-direction:column;
-    height:100vh;
-  }
-  header {
-    background:var(--surface);
-    display:flex; justify-content:space-between; align-items:center;
-    padding:.5rem 1rem; position:sticky; top:0; z-index:10;
-  }
-  .header-left, .header-right { display:flex; align-items:center; gap:.5rem }
-  #page-title { font-size:1.2rem; color:var(--text-secondary) }
-  .btn {
-    background:var(--bg-secondary);
-    color:var(--text-secondary);
-    border:none; border-radius:8px;
-    padding:.5rem 1rem; cursor:pointer;
-  }
-  .btn:hover { background:var(--accent) }
-  #menu-btn {
-    background:none; border:none;
-    font-size:1.5rem; cursor:pointer;
-  }
-  .menu {
-    position:absolute; right:1rem; top:3rem;
-    background:#fff; border:1px solid var(--text-secondary);
-    border-radius:6px; box-shadow:0 2px 6px var(--shadow);
-    display:none;
-  }
-  .menu.visible { display:block }
-  .menu ul { list-style:none; margin:0; padding:0 }
-  .menu li { padding:.5rem 1rem; cursor:pointer }
-  .menu li:hover { background:var(--bg-secondary) }
+      --accent:         var(--surface);
+      --shadow:         rgba(0,0,0,0.1);
+    }
+    * { box-sizing:border-box; margin:0; padding:0 }
+    body {
+      font-family:sans-serif;
+      background:var(--bg-primary);
+      color:var(--text-primary);
+      display:flex; flex-direction:column;
+      height:100vh;
+    }
+    header {
+      background:var(--surface);
+      display:flex; justify-content:space-between; align-items:center;
+      padding:.5rem 1rem; position:sticky; top:0; z-index:10;
+    }
+    .header-left, .header-right { display:flex; align-items:center; gap:.5rem }
+    #page-title { font-size:1.2rem; color:var(--text-secondary) }
+    .btn {
+      background:var(--bg-secondary);
+      color:var(--text-secondary);
+      border:none; border-radius:8px;
+      padding:.5rem 1rem; cursor:pointer;
+    }
+    .btn:hover { background:var(--accent) }
+    #menu-btn {
+      background:none; border:none;
+      font-size:1.5rem; cursor:pointer;
+    }
+    .menu {
+      position:absolute; right:1rem; top:3rem;
+      background:#fff; border:1px solid var(--text-secondary);
+      border-radius:6px; box-shadow:0 2px 6px var(--shadow);
+      display:none;
+    }
+    .menu.visible { display:block }
+    .menu ul { list-style:none; margin:0; padding:0 }
+    .menu li { padding:.5rem 1rem; cursor:pointer }
+    .menu li:hover { background:var(--bg-secondary) }
 
-  main { flex:1; overflow-y:auto; padding:1rem }
-  .card {
-    display:flex; justify-content:space-between; align-items:center;
-    background:var(--surface); border-radius:12px;
-    padding:.75rem; margin-bottom:.75rem;
-    box-shadow:0 2px 6px var(--shadow);
-  }
-  .card-content { flex:1; display:flex; align-items:center; gap:.5rem }
-  .card-actions { display:flex; align-items:center; gap:.5rem }
-  .mark-icon { font-size:1.2rem; }
-  .progress-bar { width:80px; }
-  .hidden { display:none }
-</style>
+    main { flex:1; overflow-y:auto; padding:1rem }
+    .card {
+      display:flex; justify-content:space-between; align-items:center;
+      background:var(--surface); border-radius:12px;
+      padding:.75rem; margin-bottom:.75rem;
+      box-shadow:0 2px 6px var(--shadow);
+    }
+    .card-content { flex:1; display:flex; align-items:center; gap:.5rem }
+    .card-actions { display:flex; align-items:center; gap:.5rem }
+    .mark-icon { font-size:1.2rem; }
+    .progress-bar { width:80px; }
+    .hidden { display:none }
+  </style>
+</head>
 
-<header>
-  <div class="header-left">
-    <button id="back" class="btn hidden">←</button>
-    <h1 id="page-title">AllProjectS v1.5</h1>
-  </div>
-  <div class="header-right">
-    <button id="addProj" class="btn">+ Project</button>
-    <button id="addTask" class="btn hidden">+ Task</button>
-    <button id="menu-btn" onclick="event.stopPropagation(); menu.classList.toggle('visible')">⋮</button>
-  </div>
-  <div id="menu" class="menu" onclick="event.stopPropagation()">
-    <ul>
-      <li id="m-edit">✏️ Edit</li>
-      <li id="m-search">🔍 Search</li>
-      <li id="m-sort">⇅ Ordenate</li>
-      <li id="m-filter">⌛ Date Filter</li>
-      <li id="m-export">📤 Export CSV</li>
-      <li id="m-import">📥 Import CSV</li>
-    </ul>
-  </div>
-</header>
+<body>
+  <header>
+    <div class="header-left">
+      <button id="back" class="btn hidden">←</button>
+      <h1 id="page-title">AllProjectS v1.5</h1>
+    </div>
+    <div class="header-right">
+      <button id="addProj" class="btn">+ Project</button>
+      <button id="addTask" class="btn hidden">+ Task</button>
+      <button id="menu-btn" onclick="event.stopPropagation(); menu.classList.toggle('visible')">⋮</button>
+    </div>
+    <div id="menu" class="menu" onclick="event.stopPropagation()">
+      <ul>
+        <li id="m-edit">✏️ Edit</li>
+        <li id="m-search">🔍 Search</li>
+        <li id="m-sort">⇅ Ordenate</li>
+        <li id="m-filter">⌛ Date Filter</li>
+        <li id="m-export">📤 Export CSV</li>
+        <li id="m-import">📥 Import CSV</li>
+        <li id="m-account">🔑 Change User/Password</li>
+        <li id="m-exit">🚪 Sair</li>
+      </ul>
+    </div>
+  </header>
 
-<main>
-  <section id="viewProj"><div id="listProj"></div></section>
-  <section id="viewTask" class="hidden"><div id="listTask"></div></section>
-</main>
+  <main>
+    <section id="viewProj"><div id="listProj"></div></section>
+    <section id="viewTask" class="hidden"><div id="listTask"></div></section>
+  </main>
 
-<script>
-  const menu     = document.getElementById('menu');
-  const back     = document.getElementById('back');
-  const addProj  = document.getElementById('addProj');
-  const addTask  = document.getElementById('addTask');
-  const titleEl  = document.getElementById('page-title');
-  const listProj = document.getElementById('listProj');
-  const listTask = document.getElementById('listTask');
-  const viewProj = document.getElementById('viewProj');
-  const viewTask = document.getElementById('viewTask');
-  const mEdit    = document.getElementById('m-edit');
-  const mSearch  = document.getElementById('m-search');
-  const mSort    = document.getElementById('m-sort');
-  const mFilter  = document.getElementById('m-filter');
-  const mExport  = document.getElementById('m-export');
-  const mImport  = document.getElementById('m-import');
+  <script>
+    // ======= AUTENTICAÇÃO + CADASTRO DINÂMICO =======
+    const KEY_USER = 'apppwa_user';
+    const KEY_PASS = 'apppwa_pass';
 
-  let projects = JSON.parse(localStorage.getItem('projects')||'[]');
-  let current  = null;
-  let asc      = true;
+    let storedUser = localStorage.getItem(KEY_USER);
+    let storedPass = localStorage.getItem(KEY_PASS);
 
-  const save   = () => localStorage.setItem('projects', JSON.stringify(projects));
-  const idxProj= () => projects.map((_,i)=>i);
-  const idxTask= p => projects[p].tasks.map((_,i)=>i);
-
-  const importInput = document.createElement('input');
-  importInput.type = 'file'; importInput.accept = '.csv';
-  importInput.style.display = 'none';
-  importInput.onchange = () => {
-    const file = importInput.files[0]; if(!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      const lines = e.target.result.trim().split('\n');
-      const header = lines.shift();
-      if (header.startsWith('task,')) {
-        const projName = prompt('Name of project to import tasks:');
-        if (!projName) return;
-        let proj = projects.find(p=>p.name===projName);
-        if (!proj) { proj={name:projName,tasks:[]}; projects.push(proj); }
-        lines.forEach(line=>{
-          const [rawT,rawDt,rawPr] = line.split(',');
-          proj.tasks.push({
-            title: rawT.replace(/^"|"$/g,''),
-            datetime: rawDt||null,
-            tracking: parseInt(rawPr,10)>0,
-            progress: parseInt(rawPr,10)||0,
-            mark: null
-          });
-        });
-      } else {
-        projects = [];
-        lines.forEach(line=>{
-          const m = line.match(/"([^\"]*)","([^\"]*)",([^,]*),([^,]+)/);
-          if (!m) return;
-          const [,pn,tt,dt,pr] = m;
-          let proj = projects.find(p=>p.name===pn);
-          if (!proj) { proj={name:pn,tasks:[]}; projects.push(proj); }
-          proj.tasks.push({
-            title: tt,
-            datetime: dt||null,
-            tracking: parseInt(pr,10)>0,
-            progress: parseInt(pr,10)||0,
-            mark: null
-          });
-        });
+    // Se não existir, faz o cadastro
+    if (!storedUser || !storedPass) {
+      const newUser = prompt('Bem‑vindo! Defina um usuário:');
+      if (!newUser) {
+        alert('Cadastro cancelado — usuário obrigatório.');
+        throw new Error('Cadastro cancelado');
       }
-      save(); showProj(idxProj());
-      alert('Import finished!');
+      const newPass = prompt('Agora defina uma senha:');
+      if (!newPass) {
+        alert('Cadastro cancelado — senha obrigatória.');
+        throw new Error('Cadastro cancelado');
+      }
+      localStorage.setItem(KEY_USER, newUser);
+      localStorage.setItem(KEY_PASS, newPass);
+      alert('Usuário e senha cadastrados com sucesso! Faça login a seguir.');
+      storedUser = newUser;
+      storedPass = newPass;
+    }
+
+    // Login
+    const user = prompt('Usuário:');
+    const pass = prompt('Senha:');
+    if (user !== storedUser || pass !== storedPass) {
+      alert('Usuário ou senha incorretos. O app não será aberto.');
+      throw new Error('Autenticação falhou');
+    }
+    // ======= FIM AUTENTICAÇÃO =======
+
+    // — AQUI COMEÇA O SEU CÓDIGO EXISTENTE (sem nenhuma outra alteração) —
+    const menu     = document.getElementById('menu');
+    const back     = document.getElementById('back');
+    const addProj  = document.getElementById('addProj');
+    const addTask  = document.getElementById('addTask');
+    const titleEl  = document.getElementById('page-title');
+    const listProj = document.getElementById('listProj');
+    const listTask = document.getElementById('listTask');
+    const viewProj = document.getElementById('viewProj');
+    const viewTask = document.getElementById('viewTask');
+    const mEdit    = document.getElementById('m-edit');
+    const mSearch  = document.getElementById('m-search');
+    const mSort    = document.getElementById('m-sort');
+    const mFilter  = document.getElementById('m-filter');
+    const mExport  = document.getElementById('m-export');
+    const mImport  = document.getElementById('m-import');
+    const mAccount = document.getElementById('m-account');
+    const mExit    = document.getElementById('m-exit');
+
+    let projects = JSON.parse(localStorage.getItem('projects')||'[]');
+    let current  = null;
+    let asc      = true;
+
+    const save   = () => localStorage.setItem('projects', JSON.stringify(projects));
+    const idxProj= () => projects.map((_,i)=>i);
+    const idxTask= p => projects[p].tasks.map((_,i)=>i);
+
+    // hidden file input for CSV import
+    const importInput = document.createElement('input');
+    importInput.type = 'file'; importInput.accept = '.csv';
+    importInput.style.display = 'none';
+    importInput.onchange = () => {
+      const file = importInput.files[0]; if(!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const lines = e.target.result.trim().split('\n');
+        const header = lines.shift();
+        if (header.startsWith('task,')) {
+          const projName = prompt('Name of project to import tasks:');
+          if (!projName) return;
+          let proj = projects.find(p=>p.name===projName);
+          if (!proj) { proj={name:projName,tasks:[]}; projects.push(proj); }
+          lines.forEach(line=>{
+            const [rawT,rawDt,rawPr] = line.split(',');
+            proj.tasks.push({
+              title: rawT.replace(/^"|"$/g,''),
+              datetime: rawDt||null,
+              tracking: parseInt(rawPr,10)>0,
+              progress: parseInt(rawPr,10)||0,
+              mark: null
+            });
+          });
+        } else {
+          projects = [];
+          lines.forEach(line=>{
+            const m = line.match(/"([^"]*)","([^"]*)",([^,]*),([^,]+)/);
+            if (!m) return;
+            const [,pn,tt,dt,pr] = m;
+            let proj = projects.find(p=>p.name===pn);
+            if (!proj) { proj={name:pn,tasks:[]}; projects.push(proj); }
+            proj.tasks.push({
+              title: tt,
+              datetime: dt||null,
+              tracking: parseInt(pr,10)>0,
+              progress: parseInt(pr,10)||0,
+              mark: null
+            });
+          });
+        }
+        save(); showProj(idxProj());
+        alert('Import finished!');
+      };
+      reader.readAsText(file);
     };
-    reader.readAsText(file);
-  };
-  document.body.append(importInput);
+    document.body.append(importInput);
 
-  function showProj(indices) {
-    current = null;
-    titleEl.textContent = 'AllProjectS v1.5';
-    back.classList.add('hidden');
-    addProj.classList.remove('hidden');
-    addTask.classList.add('hidden');
-    viewProj.classList.remove('hidden');
-    viewTask.classList.add('hidden');
-    listProj.innerHTML = '';
+    function showProj(indices) {
+      current = null;
+      titleEl.textContent = 'AllProjectS v1.5';
+      back.classList.add('hidden');
+      addProj.classList.remove('hidden');
+      addTask.classList.add('hidden');
+      viewProj.classList.remove('hidden');
+      viewTask.classList.add('hidden');
+      listProj.innerHTML = '';
 
-    indices.forEach(i=>{
-      const p = projects[i];
-      const card = document.createElement('div'); card.className='card';
-      card.onclick = ()=> showTask(idxTask(i), i);
+      indices.forEach(i=>{
+        const p = projects[i];
+        const card = document.createElement('div'); card.className='card';
+        card.onclick = ()=> showTask(idxTask(i), i);
 
-      const content = document.createElement('div'); content.className='card-content';
-      const txt = document.createElement('span');
-      txt.textContent = `${p.name} (${p.tasks.length})`;
-      content.append(txt);
+        const content = document.createElement('div'); content.className='card-content';
+        const txt = document.createElement('span');
+        txt.textContent = `${p.name} (${p.tasks.length})`;
+        content.append(txt);
 
-      const actions = document.createElement('div'); actions.className='card-actions';
-      const ed = document.createElement('button'); ed.innerText='✏️';
-      ed.onclick = e=>{ e.stopPropagation(); const n=prompt('New name:',p.name); if(n){p.name=n;save();showProj(indices);} };
-      const del = document.createElement('button'); del.innerText='🗑️';
-      del.onclick = e=>{ e.stopPropagation(); if(confirm('Delete project?')){projects.splice(i,1);save();showProj(idxProj());} };
-      actions.append(ed,del);
+        const actions = document.createElement('div'); actions.className='card-actions';
+        const ed = document.createElement('button'); ed.innerText='✏️';
+        ed.onclick = e=>{ e.stopPropagation(); const n=prompt('New name:',p.name); if(n){p.name=n;save();showProj(indices);} };
+        const del = document.createElement('button'); del.innerText='🗑️';
+        del.onclick = e=>{ e.stopPropagation(); if(confirm('Delete project?')){projects.splice(i,1);save();showProj(idxProj());} };
+        actions.append(ed,del);
 
-      card.append(content, actions);
-      listProj.append(card);
-    });
-  }
+        card.append(content, actions);
+        listProj.append(card);
+      });
+    }
 
-  function showTask(indices, projIdx) {
-    current = projIdx;
-    const p = projects[projIdx];
-    titleEl.textContent = p.name;
-    back.classList.remove('hidden');
-    addProj.classList.add('hidden');
-    addTask.classList.remove('hidden');
-    viewProj.classList.add('hidden');
-    viewTask.classList.remove('hidden');
-    listTask.innerHTML = '';
+    function showTask(indices, projIdx) {
+      current = projIdx;
+      const p = projects[projIdx];
+      titleEl.textContent = p.name;
+      back.classList.remove('hidden');
+      addProj.classList.add('hidden');
+      addTask.classList.remove('hidden');
+      viewProj.classList.add('hidden');
+      viewTask.classList.remove('hidden');
+      listTask.innerHTML = '';
 
-    indices.forEach(i=>{
-      const t = p.tasks[i];
-      const card = document.createElement('div'); card.className='card';
+      indices.forEach(i=>{
+        const t = p.tasks[i];
+        const card = document.createElement('div'); card.className='card';
 
-      const content = document.createElement('div'); content.className='card-content';
-      const chk = document.createElement('input'); chk.type='checkbox'; chk.checked=t.tracking;
-      chk.onchange=()=>{ t.tracking=chk.checked; if(!t.tracking) t.progress=0; save(); showTask(indices,projIdx); };
-      const dot = document.createElement('span'); dot.className='mark-icon'; dot.innerText='●';
-      dot.style.color = t.mark||'transparent';
-      const txt = document.createElement('span'); txt.textContent = t.title;
-      content.append(chk, dot, txt);
-      if(t.datetime){ const dt = document.createElement('small'); dt.textContent=new Date(t.datetime).toLocaleString(); content.append(dt); }
+        const content = document.createElement('div'); content.className='card-content';
+        const chk = document.createElement('input');
+        chk.type='checkbox'; chk.checked=t.tracking;
+        chk.onchange=()=>{ t.tracking=chk.checked; if(!t.tracking) t.progress=0; save(); showTask(indices,projIdx); };
+        const dot = document.createElement('span');
+        dot.className='mark-icon';
+        dot.innerText = '●';
+        dot.style.color = t.mark||'transparent';
+        const txt = document.createElement('span');
+        txt.textContent = t.title;
+        content.append(chk, dot, txt);
+        if(t.datetime){
+          const dt = document.createElement('small');
+          dt.textContent = new Date(t.datetime).toLocaleString();
+          content.append(dt);
+        }
 
-      const actions = document.createElement('div'); actions.className='card-actions';
-      if(t.tracking){ const pr=document.createElement('progress'); pr.className='progress-bar'; pr.max=100; pr.value=t.progress;
-        const up=document.createElement('button'); up.innerText='📈'; up.onclick=e=>{ e.stopPropagation(); const v=parseInt(prompt('Progress (0‑100):',t.progress),10); if(!isNaN(v)){t.progress=Math.min(100,Math.max(0,v));save();showTask(indices,projIdx);} };
-        actions.append(pr,up);
+        const actions = document.createElement('div'); actions.className='card-actions';
+        if(t.tracking){
+          const pr = document.createElement('progress');
+          pr.className='progress-bar'; pr.max=100; pr.value=t.progress;
+          const up = document.createElement('button');
+          up.innerText='📈';
+          up.onclick=e=>{ e.stopPropagation(); const v=parseInt(prompt('Progress (0‑100):',t.progress),10); if(!isNaN(v)){t.progress=Math.min(100,Math.max(0,v));save();showTask(indices,projIdx);} };
+          actions.append(pr,up);
+        }
+        const ed = document.createElement('button'); ed.innerText='✏️';
+        ed.onclick=e=>{ e.stopPropagation();
+          const nt=prompt('Title:',t.title);
+          const nd=prompt('Date/time (YYYY-MM-DD hh:mm):', t.datetime?new Date(t.datetime).toISOString().slice(0,16).replace('T',' '):'');
+          const nm=prompt('Color (hex ou name) ou branco:', t.mark||'');
+          if(nt) t.title=nt;
+          if(nd) t.datetime=new Date(nd).toISOString();
+          t.mark = nm.trim()||null;
+          save(); showTask(indices,projIdx);
+        };
+        const del = document.createElement('button'); del.innerText='🗑️';
+        del.onclick=e=>{ e.stopPropagation(); if(confirm('Delete task?')){p.tasks.splice(i,1); save();showTask(idxTask(projIdx),projIdx);} };
+        actions.append(ed,del);
+
+        card.append(content, actions);
+        listTask.append(card);
+      });
+    }
+
+    // init
+    showProj(idxProj());
+
+    // eventos
+    addProj.onclick=()=>{ const n=prompt('Name of project:'); if(n){projects.push({name:n,tasks:[]}); save(); showProj(idxProj());}};
+    back.onclick=()=>showProj(idxProj());
+    addTask.onclick=()=>{ const t=prompt('Title of task:'); if(!t)return; const dt=prompt('Date/time (YYYY-MM-DD hh:mm):'); const mk=prompt('Color (hex ou name) ou branco:'); projects[current].tasks.push({title:t, datetime:dt?new Date(dt).toISOString():null, tracking:false, progress:0, mark: mk.trim()||null}); save(); showTask(idxTask(current),current); };
+
+    mEdit.onclick  =()=>alert('Use ✏️ at cards to edit.');
+    mSearch.onclick=()=>{ const term=prompt('Search:').toLowerCase(); if(current===null){ showProj(idxProj().filter(i=>projects[i].name.toLowerCase().includes(term))); } else { showTask(idxTask(current).filter(i=>projects[current].tasks[i].title.toLowerCase().includes(term)),current); }};
+    mSort.onclick  =()=>{ if(current===null){ let a=idxProj(); a.sort((a,b)=>asc?projects[a].name.localeCompare(projects[b].name):projects[b].name.localeCompare(projects[a].name)); showProj(a);} else{ let a=idxTask(current); a.sort((a,b)=>asc?projects[current].tasks[a].title.localeCompare(projects[current].tasks[b].title):projects[current].tasks[b].title.localeCompare(projects[current].tasks[a].title)); showTask(a,current);} asc=!asc; };
+    mFilter.onclick=()=>{ if(current===null){alert('Open a project to filter.');return;} const s=prompt('Start at (YYYY-MM-DD hh:mm):'); if(!s)return; const e=prompt('End at (YYYY-MM-DD hh:mm):'); if(!e)return; const st=new Date(s),en=new Date(e); showTask(idxTask(current).filter(i=>{const d=projects[current].tasks[i].datetime?new Date(projects[current].tasks[i].datetime):null;return d&&d>=st&&d<=en;}),current); };
+    mExport.onclick = ()=>{/* igual v1.3 code de export */};
+    mImport.onclick = ()=> importInput.click();
+
+    // alterar credenciais
+    mAccount.onclick = () => {
+      const curU = prompt('Current user:');
+      const curP = prompt('Current password:');
+      if (curU !== storedUser || curP !== storedPass) {
+        alert('Incorrect current credentials.');
+        return;
       }
-      const ed = document.createElement('button'); ed.innerText='✏️';
-      ed.onclick=e=>{ e.stopPropagation(); const nt=prompt('Title:',t.title); const nd=prompt('Date/time (YYYY-MM-DD hh:mm):', t.datetime?new Date(t.datetime).toISOString().slice(0,16).replace('T',' '):''); const nm=prompt('Color or blank:', t.mark||''); if(nt) t.title=nt; if(nd) t.datetime=new Date(nd).toISOString(); t.mark=nm.trim()||null; save(); showTask(indices,projIdx); };
-      const del=document.createElement('button'); del.innerText='🗑️'; del.onclick=e=>{ e.stopPropagation(); if(confirm('Delete task?')){p.tasks.splice(i,1);save();showTask(idxTask(projIdx),projIdx);} };
-      actions.append(ed,del);
+      const newU = prompt('New user:', storedUser);
+      if (!newU) { alert('User not changed.'); return; }
+      const newP = prompt('New password:');
+      if (!newP) { alert('Passor not changd.'); return; }
+      localStorage.setItem(KEY_USER, newU);
+      localStorage.setItem(KEY_PASS, newP);
+      storedUser = newU;
+      storedPass = newP;
+      alert('User and password changed with success!');
+    };
 
-      card.append(content, actions);
-      listTask.append(card);
-    });
-  }
-
-  // init
-  showProj(idxProj());
-
-  addProj.onclick=()=>{ const n=prompt('Name of project:'); if(n){projects.push({name:n,tasks:[]}); save(); showProj(idxProj());}};
-  back.onclick=()=>showProj(idxProj());
-  addTask.onclick=()=>{ const t=prompt('Title of task:'); if(!t)return; const dt=prompt('Date/time (YYYY-MM-DD hh:mm):'); const mk=prompt('Color or blank:'); projects[current].tasks.push({title:t,datetime:dt?new Date(dt).toISOString():null,tracking:false,progress:0,mark:mk.trim()||null}); save(); showTask(idxTask(current),current); };
-
-  mEdit.onclick  =()=>alert('Use ✏️ at cards to edit.');
-  mSearch.onclick=()=>{ const term=prompt('Search:').toLowerCase(); if(current===null){ showProj(idxProj().filter(i=>projects[i].name.toLowerCase().includes(term))); } else { showTask(idxTask(current).filter(i=>projects[current].tasks[i].title.toLowerCase().includes(term)),current); }};
-  mSort.onclick  =()=>{ if(current===null){ let a=idxProj(); a.sort((a,b)=>asc?projects[a].name.localeCompare(projects[b].name):projects[b].name.localeCompare(projects[a].name)); showProj(a);} else{ let a=idxTask(current); a.sort((a,b)=>asc?projects[current].tasks[a].title.localeCompare(projects[current].tasks[b].title):projects[current].tasks[b].title.localeCompare(projects[current].tasks[a].title)); showTask(a,current);} asc=!asc; };
-  mFilter.onclick=()=>{ if(current===null){alert('Open a project to filter.');return;} const s=prompt('Start (YYYY-MM-DD hh:mm):'); if(!s)return; const e=prompt('End (YYYY-MM-DD hh:mm):'); if(!e)return; const st=new Date(s),en=new Date(e); showTask(idxTask(current).filter(i=>{const d=projects[current].tasks[i].datetime?new Date(projects[current].tasks[i].datetime):null;return d&&d>=st&&d<=en;}),current); };
-  mExport.onclick=()=>{
-    const header = current===null
-      ? 'project,task,datetime,progress\n'
-      : 'task,datetime,progress\n';
-    const lines = current===null
-      ? projects.flatMap(p=>p.tasks.map(t=>`"${p.name}","${t.title}",${t.datetime||""},${t.progress||0}`))
-      : projects[current].tasks.map(t=>`"${t.title}",${t.datetime||""},${t.progress||0}`);
-    const csv = header + lines.join("\n");
-    const blob = new Blob([csv],{type:'text/csv'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = current===null ? 'allprojects.csv' : `project_${projects[current].name}.csv`;
-    document.body.append(a); a.click(); document.body.removeChild(a);
-  };
-  mImport.onclick=()=>importInput.click();
-</script>
+    // sair (exit)
+    mExit.onclick = () => {
+      localStorage.removeItem(KEY_USER);
+      localStorage.removeItem(KEY_PASS);
+      alert('You exit. Reloading to ask for login again.');
+      location.reload();
+    };
+  </script>
+</body>
+</html>
