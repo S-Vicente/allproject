@@ -77,6 +77,8 @@
       <h1 id="page-title">AllProjectS v1.7</h1>
     </div>
     <div class="header-right">
+      <!-- contador de projetos -->
+      <span id="proj-count">(0)</span>
       <button id="addProj" class="btn">+ Project</button>
       <button id="addTask" class="btn hidden">+ Task</button>
       <button id="menu-btn" onclick="event.stopPropagation(); menu.classList.toggle('visible')">⋮</button>
@@ -155,6 +157,13 @@
     const mAccount = document.getElementById('m-account');
     const mExit    = document.getElementById('m-exit');
 
+    // elemento do contador de projetos
+    const projCountEl = document.getElementById('proj-count');
+    // função para atualizar o contador de projetos
+    function updateProjCount() {
+      projCountEl.textContent = `(${projects.length})`;
+    }
+
     let projects = JSON.parse(localStorage.getItem('projects')||'[]');
     let current  = null;
     let asc      = true;
@@ -213,6 +222,9 @@
     document.body.append(importInput);
 
     function showProj(indices) {
+      // atualiza o contador toda vez que listar projetos
+      updateProjCount();
+
       current = null;
       titleEl.textContent = 'AllProjectS v1.7';
       back.classList.add('hidden');
@@ -237,7 +249,7 @@
         ed.onclick = e=>{ e.stopPropagation(); const n=prompt('New name:',p.name); if(n){p.name=n;save();showProj(indices);} };
         const del = document.createElement('button'); del.innerText='🗑️';
         del.onclick = e=>{ e.stopPropagation(); if(confirm('Delete project?')){projects.splice(i,1);save();showProj(idxProj());} };
-        actions.append(ed,del);
+        actions.append(ed, del);
 
         card.append(content, actions);
         listProj.append(card);
@@ -310,7 +322,7 @@
     // eventos
     addProj.onclick=()=>{ const n=prompt('Name of project:'); if(n){projects.push({name:n,tasks:[]}); save(); showProj(idxProj());}};
     back.onclick=()=>showProj(idxProj());
-    addTask.onclick=()=>{ const t=prompt('Title of task:'); if(!t)return; const dt=prompt('Date/time (YYYY-MM-DD hh:mm):'); const mk=prompt('Color (hex or name) or blank:'); projects[current].tasks.push({title:t, datetime:dt?new Date(dt).toISOString():null, tracking:false, progress:0, mark: mk.trim()||null}); save(); showTask(idxTask(current),current); };
+    addTask.onclick=()=>{ const t=prompt('Title of task:'); if(!t)return; const dt=prompt('Date/time (YYYY-MM-DD hh:mm):'); const mk=prompt('Color (hex or name) ou blank:'); projects[current].tasks.push({title:t, datetime:dt?new Date(dt).toISOString():null, tracking:false, progress:0, mark: mk.trim()||null}); save(); showTask(idxTask(current),current); };
 
     mEdit.onclick  =()=>alert('Use ✏️ at cards to edit.');
     mSearch.onclick=()=>{ const term=prompt('Search:').toLowerCase(); if(current===null){ showProj(idxProj().filter(i=>projects[i].name.toLowerCase().includes(term))); } else { showTask(idxTask(current).filter(i=>projects[current].tasks[i].title.toLowerCase().includes(term)),current); }};
@@ -319,7 +331,6 @@
 
     // Export CSV
     mExport.onclick = () => {
-      // monta header e linhas
       let csv = 'project,task,datetime,progress\n';
       projects.forEach(p => {
         p.tasks.forEach(t => {
@@ -330,7 +341,6 @@
           csv += `"${projEscaped}","${taskEscaped}",${dt},${pr}\n`;
         });
       });
-      // cria blob e dispara download
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
@@ -340,13 +350,11 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      // fecha menu
       menu.classList.remove('visible');
     };
 
     mImport.onclick = () => importInput.click();
 
-    // alterar credenciais
     mAccount.onclick = () => {
       const curU = prompt('Current user:');
       const curP = prompt('Current password:');
@@ -365,7 +373,6 @@
       alert('User and password changed successfully!');
     };
 
-    // sair (exit) — limpa apenas a “sessão”, não as credenciais
     mExit.onclick = () => {
       alert('You exit. Reloading to ask for login again.');
       location.reload();
