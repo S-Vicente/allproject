@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>AllProjectS v1.6</title>
+  <title>AllProjectS v1.7</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#B6A39E">
   <style>
@@ -74,7 +74,7 @@
   <header>
     <div class="header-left">
       <button id="back" class="btn hidden">←</button>
-      <h1 id="page-title">AllProjectS v1.6</h1>
+      <h1 id="page-title">AllProjectS v1.7</h1>
     </div>
     <div class="header-right">
       <button id="addProj" class="btn">+ Project</button>
@@ -214,7 +214,7 @@
 
     function showProj(indices) {
       current = null;
-      titleEl.textContent = 'AllProjectS v1.6';
+      titleEl.textContent = 'AllProjectS v1.7';
       back.classList.add('hidden');
       addProj.classList.remove('hidden');
       addTask.classList.add('hidden');
@@ -282,7 +282,7 @@
           pr.className='progress-bar'; pr.max=100; pr.value=t.progress;
           const up = document.createElement('button');
           up.innerText='📈';
-          up.onclick=e=>{ e.stopPropagation(); const v=parseInt(prompt('Progress (0‑100):',t.progress),10); if(!isNaN(v)){t.progress=Math.min(100,Math.max(0,v));save();showTask(indices,projIdx);} };
+          up.onclick=e=>{ e.stopPropagation(); const v=parseInt(prompt('Progress (0-100):',t.progress),10); if(!isNaN(v)){t.progress=Math.min(100,Math.max(0,v));save();showTask(indices,projIdx);} };
           actions.append(pr,up);
         }
         const ed = document.createElement('button'); ed.innerText='✏️';
@@ -316,8 +316,35 @@
     mSearch.onclick=()=>{ const term=prompt('Search:').toLowerCase(); if(current===null){ showProj(idxProj().filter(i=>projects[i].name.toLowerCase().includes(term))); } else { showTask(idxTask(current).filter(i=>projects[current].tasks[i].title.toLowerCase().includes(term)),current); }};
     mSort.onclick  =()=>{ if(current===null){ let a=idxProj(); a.sort((a,b)=>asc?projects[a].name.localeCompare(projects[b].name):projects[b].name.localeCompare(projects[a].name)); showProj(a);} else{ let a=idxTask(current); a.sort((a,b)=>asc?projects[current].tasks[a].title.localeCompare(projects[current].tasks[b].title):projects[current].tasks[b].title.localeCompare(projects[current].tasks[a].title)); showTask(a,current);} asc=!asc; };
     mFilter.onclick=()=>{ if(current===null){alert('Open a project to filter.');return;} const s=prompt('Start at (YYYY-MM-DD hh:mm):'); if(!s)return; const e=prompt('End at (YYYY-MM-DD hh:mm):'); if(!e)return; const st=new Date(s),en=new Date(e); showTask(idxTask(current).filter(i=>{const d=projects[current].tasks[i].datetime?new Date(projects[current].tasks[i].datetime):null;return d&&d>=st&&d<=en;}),current); };
-    mExport.onclick = ()=>{/* igual v1.3 code de export */};
-    mImport.onclick = ()=> importInput.click();
+
+    // Export CSV
+    mExport.onclick = () => {
+      // monta header e linhas
+      let csv = 'project,task,datetime,progress\n';
+      projects.forEach(p => {
+        p.tasks.forEach(t => {
+          const projEscaped = p.name.replace(/"/g, '""');
+          const taskEscaped = t.title.replace(/"/g, '""');
+          const dt = t.datetime || '';
+          const pr = t.progress || 0;
+          csv += `"${projEscaped}","${taskEscaped}",${dt},${pr}\n`;
+        });
+      });
+      // cria blob e dispara download
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = 'projects.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      // fecha menu
+      menu.classList.remove('visible');
+    };
+
+    mImport.onclick = () => importInput.click();
 
     // alterar credenciais
     mAccount.onclick = () => {
